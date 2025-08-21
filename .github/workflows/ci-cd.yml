@@ -1,0 +1,76 @@
+name: CI/CD MyMatch Admin
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build MyMatch
+    runs-on: ubuntu-latest
+    environment: TEST
+    defaults:
+      run:
+        working-directory: ./mymatch-admin
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build React
+      env:
+        REACT_APP_API_ROOT: ${{ vars.MYMATCH_DOMAIN}}/api/
+      run: |
+        echo "Building with API Root: $REACT_APP_API_ROOT"
+        CI=false npm run build
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mymatch-build
+        path: build/
+        retention-days: 1
+
+  deploy:
+    name: Deploy to TEST Server
+    runs-on: ubuntu-latest
+    environment: TEST
+    needs: build
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: mymatch-build
+        path: build
+
+    - name: Copy Build Files to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ vars.HOST_IP }}
+        username: root
+        key: ${{ secrets.SECRET_KEY }}
+        source: "build/*"
+        target: "/var/www/mymatch-admin/build"
+        strip_components: 1
+
+    - name: Finalize Deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ vars.HOST_IP }}
+        username: root
+        key: ${{ secrets.SECRET_KEY }}
+        script: |
+          chown -R www-data:www-data /var/www/mymatch-admin/build
+          echo "Deploy MyMatch Admin to TEST environment successfully!"
