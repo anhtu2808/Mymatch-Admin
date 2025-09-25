@@ -217,8 +217,7 @@ const PermissionPage = () => {
       <Preloading isLoading={loading} />
 
       {/* Section 1: Permission Matrix */}
-      <Card bordered={false}>
-        <Title level={3}>Permission Matrix</Title>
+      <Card>
         <Table
           rowKey="id"
           columns={matrixColumns}
@@ -246,7 +245,7 @@ const PermissionPage = () => {
           <Col xs={24} md={12} ref={editSectionRef}>
             <Card bordered={false}>
               <Title level={3}>
-                {editingPermission ? "Update Permission" : "Create New Permission"}
+                {editingPermission ? "Update Permission" : "Add Permission"}
               </Title>
               <Form
                 form={permissionForm}
@@ -277,7 +276,7 @@ const PermissionPage = () => {
                 <Form.Item>
                     <Space>
                         <Button type="primary" htmlType="submit">
-                            {editingPermission ? "Update Permission" : "Create Permission"}
+                            {editingPermission ? "Update Permission" : "Add Permission"}
                         </Button>
                         {editingPermission && (
                             <Button onClick={handleCancelEdit}>
@@ -293,7 +292,7 @@ const PermissionPage = () => {
           {/* Section 3: Add New Role */}
           <Col xs={24} md={12}>
             <Card bordered={false}>
-              <Title level={3}>Create New Role</Title>
+              <Title level={3}>Add New Role</Title>
               <Form form={roleForm} layout="vertical" onFinish={handleAddRole}>
                 <Form.Item
                   name="name"
