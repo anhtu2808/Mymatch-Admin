@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
   const location = useLocation()
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
 
-  if (!token && false) {
+  if (!token) {
     return <Navigate to={redirectTo} replace state={{ from: location }} />
   }
 
