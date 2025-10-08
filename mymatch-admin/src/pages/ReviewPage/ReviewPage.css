@@ -1,0 +1,188 @@
+/* ReviewPage.css */
+
+.review-page {
+  padding: 24px;
+}
+
+.review-page .ant-card {
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-page .ant-card-body {
+  padding: 16px;
+}
+
+/* Filter controls styling */
+.review-page .ant-select {
+  min-width: 150px;
+}
+
+.review-page .lecturer-select {
+  min-width: 250px;
+}
+
+.review-page .course-select,
+.review-page .student-select,
+.review-page .semester-select {
+  min-width: 180px;
+}
+
+.review-page .verification-select,
+.review-page .anonymous-select {
+  min-width: 140px;
+}
+
+.review-page .ant-picker {
+  min-width: 140px;
+}
+
+/* Button styling */
+.review-page .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.review-page .ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Table styling */
+.review-page .ant-table {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-page .ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
+  color: #262626;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.review-page .ant-table-tbody > tr:hover > td {
+  background-color: #f5f5f5;
+}
+
+/* Rating stars styling */
+.review-page .rating-stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.review-page .rating-stars .star {
+  font-size: 14px;
+  color: #faad14;
+}
+
+.review-page .rating-stars .star.empty {
+  color: #d9d9d9;
+}
+
+/* Status tags */
+.review-page .ant-tag {
+  border-radius: 4px;
+  font-weight: 500;
+  padding: 2px 8px;
+}
+
+.review-page .ant-tag-green {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+  color: #389e0d;
+}
+
+.review-page .ant-tag-red {
+  background-color: #fff2f0;
+  border-color: #ffccc7;
+  color: #cf1322;
+}
+
+.review-page .ant-tag-orange {
+  background-color: #fff7e6;
+  border-color: #ffd591;
+  color: #d46b08;
+}
+
+/* Action buttons */
+.review-page .ant-btn-text {
+  padding: 4px 8px;
+  height: auto;
+  border: none;
+  box-shadow: none;
+}
+
+.review-page .ant-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .review-page .ant-flex {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  
+  .review-page .ant-select,
+  .review-page .ant-picker {
+    min-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .review-page .ant-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .review-page .ant-table {
+    font-size: 12px;
+  }
+  
+  .review-page .ant-table-thead > tr > th,
+  .review-page .ant-table-tbody > tr > td {
+    padding: 8px 4px;
+  }
+}
+
+/* Loading state */
+.review-page .ant-spin-container {
+  min-height: 200px;
+}
+
+/* Empty state */
+.review-page .ant-empty {
+  margin: 40px 0;
+}
+
+/* Pagination styling */
+.review-page .ant-pagination {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.review-page .ant-pagination-total-text {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Custom scrollbar for table */
+.review-page .ant-table-body::-webkit-scrollbar {
+  height: 8px;
+}
+
+.review-page .ant-table-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.review-page .ant-table-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.review-page .ant-table-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
