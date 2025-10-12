@@ -1,0 +1,60 @@
+
+.course-page .ant-card {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-page .ant-card-body {
+  padding: 16px;
+}
+
+.course-page .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.course-page .ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.course-page .ant-table {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-page .ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
+  color: #262626;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.course-page .ant-table-tbody > tr:hover > td {
+  background-color: #f5f5f5;
+}
+
+.course-page .ant-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .course-page .ant-flex {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .course-page .ant-input,
+  .course-page .ant-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+.course-page .ant-pagination {
+  margin-top: 16px;
+  text-align: center;
+}
