@@ -55,20 +55,20 @@ export const deletePermissionAPI = async (id) => {
 //Lecturer API
 export const getLecturersAPI = async (params = {}) => {
   let url = `/lecturers?page=${params.page || 1}&size=${params.size || 10}&sortBy=${params.sortBy || 'id'}&sortOrder=${params.sortOrder || 'DESC'}`;
-  
+
   if (params.name && params.name !== '') {
     url += `&name=${params.name}`;
   }
-  
+
   if (params.code && params.code !== '') {
     url += `&code=${params.code}`;
   }
-  
+
   if (params.campusId && params.campusId !== 0) {
     url += `&campusId=${params.campusId}`;
   }
 
-  
+
   const response = await api.get(url);
   return response.data;
 }
@@ -91,31 +91,31 @@ export const deleteLecturerAPI = async (id) => {
 // Review API
 export const getReviewsAPI = async (params = {}) => {
   let url = `/reviews?page=${params.page || 1}&size=${params.size || 10}&sortBy=${params.sortBy || 'id'}&sortOrder=${params.sortOrder || 'DESC'}`;
-  
+
   if (params.lecturerId && params.lecturerId !== 0) {
     url += `&lecturerId=${params.lecturerId}`;
   }
-  
+
   if (params.courseId && params.courseId !== 0) {
     url += `&courseId=${params.courseId}`;
   }
-  
+
   if (params.studentId && params.studentId !== 0) {
     url += `&studentId=${params.studentId}`;
   }
-  
+
   if (params.semesterId && params.semesterId !== 0) {
     url += `&semesterId=${params.semesterId}`;
   }
-  
+
   if (params.isVerified !== undefined) {
     url += `&isVerified=${params.isVerified}`;
   }
-  
+
   if (params.isAnonymous !== undefined) {
     url += `&isAnonymous=${params.isAnonymous}`;
   }
-  
+
   const response = await api.get(url);
   return response.data;
 }
@@ -143,5 +143,61 @@ export const unverifyReviewAPI = async (id) => {
 }
 export const deleteReviewAPI = async (id) => {
   const response = await api.delete(`/reviews/${id}`);
+  return response.data;
+}
+
+
+// Course API
+export const getCoursesAPI = async (params = {}) => {
+  let url = `/courses?page=${params.page || 1}&size=${params.size || 10}&sortBy=${params.sortBy || 'code'}&sortOrder=${params.sortOrder || 'ASC'}`;
+
+  if (params.code && params.code !== '') {
+    url += `&code=${params.code}`;
+  }
+
+  if (params.name && params.name !== '') {
+    url += `&name=${params.name}`;
+  }
+  if (params.universityId && params.universityId !== 0) {
+    url += `&universityId=${params.universityId}`;
+  }
+
+  const response = await api.get(url);
+  return response.data;
+}
+
+export const getCourseDetailAPI = async (id) => {
+  const response = await api.get(`/courses/${id}`);
+  return response.data;
+}
+
+export const createCourseAPI = async (course) => {
+  const response = await api.post('/courses', course);
+  return response.data;
+}
+
+export const updateCourseAPI = async (id, data) => {
+  const response = await api.put(`/courses/${id}`, data);
+  return response.data;
+}
+
+export const deleteCourseAPI = async (id) => {
+  const response = await api.delete(`/courses/${id}`);
+  return response.data;
+}
+
+
+// University API
+export const getAllUniversitiesAPI = async (params = {}) => {
+  const page = params.page || 1;
+  const size = params.size || 1000;
+  const sort = params.sort || 'id';
+
+  const response = await api.get(`/universities?page=${page}&size=${size}&sort=${sort}`);
+  return response.data;
+}
+
+export const getUniversityByIdAPI = async (id) => {
+  const response = await api.get(`/universities/${id}`);
   return response.data;
 }

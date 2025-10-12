@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Menu } from 'antd'
-import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined } from '@ant-design/icons'
+import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
@@ -13,6 +13,7 @@ const SideBar = ({ onNavigate }) => {
     { key: '/materials', icon: <AppstoreOutlined />, label: 'Materials' },
     { key: '/reviews', icon: <FileTextOutlined />, label: 'Reviews' },
     { key: '/users', icon: <TeamOutlined />, label: 'Users' },
+    { key: '/courses', icon: <BookOutlined />, label: 'Courses' },
     { key: '/settings', icon: <SettingOutlined />, label: 'Settings' },
   ], [])
 
