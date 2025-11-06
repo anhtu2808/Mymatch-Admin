@@ -12,6 +12,7 @@ import DashboardPage from './pages/DashboardPage/DashboardPage';
 import SettingPage from './pages/SettingPage/SettingPage';
 import { UserPage } from './pages/UserPage/UserPage';
 import CoursePage from './pages/CoursePage/CoursePage';
+import ReviewCriterialPage from './pages/ReviewCriterialPage/ReviewCriterialPage';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/users" element={<UserPage />} />
             <Route path="/settings" element={<SettingPage />} />
             <Route path="/courses" element={<CoursePage />} />
+            <Route path="/review-criterias" element={<ReviewCriterialPage />} />
           </Route>
         </Route>
       </Routes>
