@@ -201,3 +201,84 @@ export const getUniversityByIdAPI = async (id) => {
   const response = await api.get(`/universities/${id}`);
   return response.data;
 }
+
+
+// Review Criteria API
+export const getReviewCriteriaAPI = async (params = {}) => {
+  let url = `/review-criteria?page=${params.page || 1}&size=${params.size || 10}&sortBy=${params.sortBy || 'id'}&sortOrder=${params.sortOrder || 'DESC'}`;
+
+  if (params.name && params.name !== '') {
+    url += `&name=${params.name}`;
+  }
+
+  if (params.type && params.type !== '') {
+    url += `&type=${params.type}`;
+  }
+
+  const response = await api.get(url);
+  return response.data;
+}
+
+export const getReviewCriteriaDetailAPI = async (id) => {
+  const response = await api.get(`/review-criteria/${id}`);
+  return response.data;
+}
+
+export const createReviewCriteriaAPI = async (data) => {
+  const response = await api.post('/review-criteria', data);
+  return response.data;
+}
+
+export const updateReviewCriteriaAPI = async (id, data) => {
+  const response = await api.put(`/review-criteria/${id}`, data);
+  return response.data;
+}
+
+export const deleteReviewCriteriaAPI = async (id) => {
+  const response = await api.delete(`/review-criteria/${id}`);
+  return response.data;
+}
+
+// Material API
+export const getMaterialsAPI = async (params = {}) => {
+  let url = `/materials?page=${params.page || 1}&size=${params.size || 10}&sortBy=${params.sortBy || 'id'}&sortOrder=${params.sortOrder || 'DESC'}`;
+
+  if (params.name && params.name !== '') {
+    url += `&name=${params.name}`;
+  }
+  if (params.description && params.description !== '') {
+    url += `&description=${params.description}`;
+  }
+  if (params.lecturerId && params.lecturerId !== 0) {
+    url += `&lecturerId=${params.lecturerId}`;
+  }
+  if (params.ownerId && params.ownerId !== 0) {
+    url += `&ownerId=${params.ownerId}`;
+  }
+  if (params.courseId && params.courseId !== 0) {
+    url += `&courseId=${params.courseId}`;
+  }
+  if (params.isPurchased !== undefined && params.isPurchased !== null) {
+    url += `&isPurchased=${params.isPurchased}`;
+  }
+
+  const response = await api.get(url);
+  return response.data;
+}
+
+export const getMaterialDetailAPI = async (id) => {
+  const response = await api.get(`/materials/${id}`);
+  return response.data;
+}
+
+export const deleteMaterialAPI = async (id) => {
+  const response = await api.delete(`/materials/${id}`);
+  return response.data;
+}
+
+export const downloadMaterialAPI = async (id) => {
+  const response = await api.get(`/materials/${id}/download`, {
+    responseType: 'blob',
+  });
+  return response;
+}
