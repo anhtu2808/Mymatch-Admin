@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Button, Menu } from 'antd'
-import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined, SwapOutlined, UsergroupAddOutlined } from '@ant-design/icons'
+import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined, SwapOutlined, UsergroupAddOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../utils/api'
 
@@ -41,7 +41,14 @@ const handleLogout = async () => {
 };
 
   return (
-    <>
+     <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        background: '#fff',
+      }}
+    >
     <Menu
       theme="light"
       mode="inline"
@@ -51,8 +58,28 @@ const handleLogout = async () => {
       style={{ background: '#fff' }}
     />
     
-    <Button onClick={() => handleLogout()}>Logout</Button>
-    </>
+    <div
+        style={{
+          padding: '16px',
+          borderTop: '1px solid #f0f0f0',
+          background: '#fff',
+        }}
+      >
+        <Button
+          type="primary"
+          danger
+          icon={<LogoutOutlined />}
+          onClick={handleLogout}
+          style={{
+            width: '100%',
+            fontWeight: 500,
+            borderRadius: 8,
+          }}
+        >
+          Logout
+        </Button>
+      </div>
+    </div>  
   )
 }
 

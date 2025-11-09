@@ -94,7 +94,6 @@ const handleDelete = (record) => {
     async onOk() {
     try {
         const response = await api.delete(`/swap-requests/${record.id}`);
-
         if (response.status === 204) {
         message.success('Swap request deleted successfully');
         await fetchData(pagination.current, pagination.pageSize);
