@@ -34,9 +34,9 @@ const SwapClassPage = () => {
       if (result.code === 200) {
         setData(result.result.data);
         setPagination({
-            current: response.currentPage,
-            pageSize: response.pageSize,
-            total: response.totalElements,
+            current: result.result.currentPage,
+            pageSize: result.result.pageSize,
+            total: result.result.totalElements,
         });
         } else {
         message.error('Failed to fetch data');
@@ -70,7 +70,7 @@ const SwapClassPage = () => {
   try {
     const response = await api.get(`/swap-requests/${record.id}`);
     const result = response.data;
-    if (result.code === 200) { // code 0 là thành công theo response mẫu
+    if (result.code === 200) { 
       setSelectedRecord(result.result);
       setDetailVisible(true);
     } else {
@@ -83,21 +83,31 @@ const SwapClassPage = () => {
   }
 };
 
-  const handleDelete = (record) => {
-    confirm({
-      title: 'Are you sure you want to delete this swap request?',
-      icon: <ExclamationCircleOutlined />,
-      content: `Student: ${record.student.user.firstName} ${record.student.user.lastName}`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        // Implement delete logic here
+const handleDelete = (record) => {
+  confirm({
+    title: 'Are you sure you want to delete this swap request?',
+    icon: <ExclamationCircleOutlined />,
+    content: `Student: ${record.student.user.firstName} ${record.student.user.lastName}`,
+    okText: 'Yes',
+    okType: 'danger',
+    cancelText: 'No',
+    async onOk() {
+    try {
+        const response = await api.delete(`/swap-requests/${record.id}`);
+
+        if (response.status === 204) {
         message.success('Swap request deleted successfully');
-        fetchData(pagination.current, pagination.pageSize);
-      },
-    });
-  };
+        await fetchData(pagination.current, pagination.pageSize);
+        } else {
+        message.error(`Failed to delete swap request (status: ${response.status})`);
+        }
+    } catch (error) {
+        message.error('Error deleting swap request: ' + error.message);
+    }
+    }
+  });
+};
+
 
   const getStatusTag = (status) => {
     const statusConfig = {
