@@ -13,6 +13,8 @@ import SettingPage from './pages/SettingPage/SettingPage';
 import { UserPage } from './pages/UserPage/UserPage';
 import CoursePage from './pages/CoursePage/CoursePage';
 import ReviewCriterialPage from './pages/ReviewCriterialPage/ReviewCriterialPage';
+import SwapClassPage from './pages/SwapClassPage/SwapClassPage';
+import MatchMemberPage from './pages/MatchMemberPage/MatchMemberPage';
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
             <Route path="/settings" element={<SettingPage />} />
             <Route path="/courses" element={<CoursePage />} />
             <Route path="/review-criterias" element={<ReviewCriterialPage />} />
+            <Route path="/swap-class" element={<SwapClassPage />} />
+            <Route path="/match-member" element={<MatchMemberPage />} />
           </Route>
         </Route>
       </Routes>
