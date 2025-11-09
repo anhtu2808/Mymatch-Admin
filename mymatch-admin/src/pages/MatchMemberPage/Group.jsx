@@ -1,51 +1,53 @@
-import React, { useEffect, useState } from 'react'
-import { Table, Card, Avatar, Tag, Typography, Spin, message, Space, Button, Modal, Descriptions, Divider } from 'antd'
+import React, { useEffect, useState } from 'react';
+import { Table, Card, Avatar, Tag, Typography, Spin, message, Space, Button, Modal, Descriptions, Divider, Input, Row, Col } from 'antd';
 import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import api from '../../utils/api'
+import api from '../../utils/api';
 
-const { Text } = Typography
+const { Text } = Typography;
 const { confirm } = Modal;
 
 function Group() {
-  const [teams, setTeams] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [pagination, setPagination] = useState({
-  current: 1,
-  pageSize: 10,
-  total: 0,
-});
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [detailVisible, setDetailVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  console.log("selectedTeam", selectedTeam);
+
+  const [filters, setFilters] = useState({
+    name: '',
+    semester: '',
+    campus: '',
+  });
+
   const fetchTeams = async (page = 1, size = 10) => {
-  setLoading(true);
-  try {
-    const response = await api.get(`https://mymatch.social/api/teams?page=${page}&size=${size}`);
-    if (response.data.code === 200) {
-      setTeams(response.data.result.data);
-      setPagination({
-        current: response.data.result.currentPage,
-        pageSize: response.data.result.pageSize,
-        total: response.data.result.totalElements,
-      });
-    } else {
-      message.error('Không thể tải danh sách nhóm');
+    setLoading(true);
+    try {
+      const response = await api.get(`https://mymatch.social/api/teams?page=${page}&size=${size}`);
+      if (response.data.code === 200) {
+        setTeams(response.data.result.data);
+        setPagination({
+          current: response.data.result.currentPage,
+          pageSize: response.data.result.pageSize,
+          total: response.data.result.totalElements,
+        });
+      } else {
+        message.error('Không thể tải danh sách nhóm');
+      }
+    } catch (error) {
+      console.error(error);
+      message.error('Lỗi khi tải dữ liệu nhóm');
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    message.error('Lỗi khi tải dữ liệu nhóm');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
-    fetchTeams(pagination.current, pagination.pageSize)
-  }, [])
+    fetchTeams(pagination.current, pagination.pageSize);
+  }, []);
 
   const handleTableChange = (newPagination) => {
-  fetchTeams(newPagination.current, newPagination.pageSize);
-};
+    fetchTeams(newPagination.current, newPagination.pageSize);
+  };
 
   const handleViewDetail = async (teamId) => {
     setLoading(true);
@@ -64,7 +66,7 @@ function Group() {
     }
   };
 
-//   const handleDelete = (record) => {
+  //   const handleDelete = (record) => {
 //     confirm({
 //       title: 'Bạn có chắc muốn xóa nhóm này?',
 //       icon: <ExclamationCircleOutlined />,
@@ -88,45 +90,26 @@ function Group() {
 //     });
 //   };
 
+  const filteredTeams = teams.filter((team) => {
+    return (
+      team.name.toLowerCase().includes(filters.name.toLowerCase()) &&
+      (team.semester?.name || '').toLowerCase().includes(filters.semester.toLowerCase()) &&
+      (team.campus?.name || '').toLowerCase().includes(filters.campus.toLowerCase())
+    );
+  });
+
   const columns = [
     {
-      title: 'Hình ảnh',
+      title: 'Image',
       dataIndex: 'image',
       key: 'image',
       width: 50,
-      render: (img) => (
-        <Avatar
-          src={img || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}
-          size={48}
-        />
-      ),
+      render: (img) => <Avatar src={img || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} size={48} />,
     },
-    {
-      title: 'Tên nhóm',
-      dataIndex: 'name',
-      key: 'name',
-      width: 150,
-      render: (text) => <Text strong>{text}</Text>,
-    },
-        {
-      title: 'Người tạo',
-      dataIndex: ['createdBy', 'user', 'username'],
-      key: 'createdBy',
-      width: 150,
-      render: (username) => username || '—',
-    },
-    {
-      title: 'Kỳ học',
-      dataIndex: ['semester', 'name'],
-      key: 'semester',
-      width: 150,
-    },
-    {
-      title: 'Cơ sở',
-      dataIndex: ['campus', 'name'],
-      key: 'campus',
-      width: 150,
-    },
+    { title: 'Group name', dataIndex: 'name', key: 'name', width: 150, render: (text) => <Text strong>{text}</Text> },
+    { title: 'Create By', dataIndex: ['createdBy', 'user', 'username'], key: 'createdBy', width: 150, render: (username) => username || '—' },
+    { title: 'Semester', dataIndex: ['semester', 'name'], key: 'semester', width: 150 },
+    { title: 'Campus', dataIndex: ['campus', 'name'], key: 'campus', width: 150 },
     {
       title: 'Actions',
       key: 'actions',
@@ -134,11 +117,7 @@ function Group() {
       fixed: 'right',
       render: (_, record) => (
         <Space>
-          <Button
-            type="text"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewDetail(record.id)}
-          />
+          <Button type="text" icon={<EyeOutlined />} onClick={() => handleViewDetail(record.id)} />
           {/* <Button
             type="text"
             danger
@@ -148,38 +127,60 @@ function Group() {
         </Space>
       ),
     },
-  ]
+  ];
 
   return (
-    <Card
-      title="Danh sách nhóm"
-      bordered={false}
-      style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-    >
+    <Card title="Danh sách nhóm" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+      {/* Search filters */}
+      <Row gutter={16} style={{ marginBottom: 16 }}>
+        <Col>
+          <Input
+            placeholder="Search by group name"
+            value={filters.name}
+            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            allowClear
+          />
+        </Col>
+        <Col>
+          <Input
+            placeholder="Search by semester"
+            value={filters.semester}
+            onChange={(e) => setFilters({ ...filters, semester: e.target.value })}
+            allowClear
+          />
+        </Col>
+        <Col>
+          <Input
+            placeholder="Search by campus"
+            value={filters.campus}
+            onChange={(e) => setFilters({ ...filters, campus: e.target.value })}
+            allowClear
+          />
+        </Col>
+      </Row>
+
       {loading ? (
         <div style={{ textAlign: 'center', padding: 40 }}>
           <Spin size="large" />
         </div>
       ) : (
         <>
-        <Table
-          columns={columns}
-          dataSource={teams}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-          ...pagination,
-          showSizeChanger: false,
-        }}
-          onChange={handleTableChange}
-          bordered
-        />
+          <Table
+            columns={columns}
+            dataSource={filteredTeams}
+            rowKey="id"
+            loading={loading}
+            pagination={{ ...pagination, showSizeChanger: false }}
+            onChange={handleTableChange}
+            bordered
+          />
 
-        <Modal
+          {/* Detail modal */}
+          <Modal
             title={selectedTeam?.name || 'Chi tiết nhóm'}
             visible={detailVisible}
             onCancel={() => setDetailVisible(false)}
-            footer={[<Button key="close" onClick={() => setDetailVisible(false)}>Đóng</Button>]}
+            footer={[<Button key="close" onClick={() => setDetailVisible(false)}>Close</Button>]}
             width={800}
           >
             {selectedTeam && (
@@ -198,7 +199,7 @@ function Group() {
                   <Descriptions.Item label="Create Date">{new Date(selectedTeam.createAt).toLocaleString()}</Descriptions.Item>
                 </Descriptions>
 
-                <Divider>Danh sách thành viên</Divider>
+                <Divider>Member list</Divider>
                 {selectedTeam.teamMember.map((tm) => (
                   <div key={tm.id} style={{ marginBottom: 10 }}>
                     <Avatar src={tm.member.image || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} size={32} />
@@ -213,7 +214,7 @@ function Group() {
                   </div>
                 ))}
 
-                <Divider>Yêu cầu tuyển thành viên</Divider>
+                <Divider>Request members</Divider>
                 {selectedTeam.teamRequest.map((tr) => (
                   <div key={tr.id} style={{ marginBottom: 10 }}>
                     <Text strong>{tr.title}</Text>
@@ -230,7 +231,8 @@ function Group() {
         </>
       )}
     </Card>
-  )
+  );
 }
 
-export default Group
+export default Group;
+
