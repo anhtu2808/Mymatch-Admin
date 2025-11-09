@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, Avatar, Typography, Select, Spin, message, Space, Button } from 'antd';
+import { Card, Table, Avatar, Typography, Select, Spin, message, Space, Button, Tag, Modal } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import api from '../../utils/api';
 
@@ -12,6 +12,9 @@ function Member() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailVisible, setDetailVisible] = useState(false);
 
   const fetchCampuses = async () => {
     try {
@@ -63,6 +66,23 @@ function Member() {
     fetchMembers(selectedCampus, newPagination.current, newPagination.pageSize);
   };
 
+  const fetchMemberDetail = async (id) => {
+  setDetailLoading(true);
+  try {
+    const response = await api.get(`https://mymatch.social/api/student-requests/${id}`);
+    if (response.data.code === 200) {
+      setSelectedMember(response.data.result);
+      setDetailVisible(true);
+    } else {
+      message.error('Không thể lấy thông tin chi tiết');
+    }
+  } catch (error) {
+    message.error('Lỗi khi lấy thông tin chi tiết');
+  } finally {
+    setDetailLoading(false);
+  }
+};
+
   const columns = [
     {
       title: 'Avatar',
@@ -99,7 +119,7 @@ function Member() {
         <Space>
           <Button type="text" 
             icon={<EyeOutlined />} 
-            // onClick={() => handleViewDetail(record.id)} 
+            onClick={() => fetchMemberDetail(record.id)}
             />
           {/* <Button
             type="text"
@@ -144,6 +164,65 @@ function Member() {
           bordered
         />
       )}
+      <Modal
+  title="Chi tiết thành viên"
+  visible={detailVisible}
+  onCancel={() => setDetailVisible(false)}
+  footer={null}
+  width={600}
+>
+  {detailLoading ? (
+    <div style={{ textAlign: 'center', padding: 40 }}>
+      <Spin size="large" />
+    </div>
+  ) : selectedMember ? (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+        <Avatar
+          size={64}
+          src={selectedMember.student.user.avatarUrl}
+          style={{ marginRight: 16 }}
+        />
+        <div>
+          <Text strong>{selectedMember.student.user.username}</Text>
+          <div>{selectedMember.student.studentCode}</div>
+          <div>{selectedMember.student.user.email}</div>
+          <div>{selectedMember.campus.name}</div>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Class: </Text> {selectedMember.classCode}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Course: </Text> {selectedMember.course.code}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Semester: </Text> {selectedMember.semester.name}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Goal: </Text> {selectedMember.goal}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Request Detail: </Text> {selectedMember.requestDetail}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Skills: </Text>
+        {selectedMember.skills.map((s) => (
+          <Tag key={s.skill.id} color="blue" style={{ marginBottom: 4 }}>
+            {s.skill.name}
+          </Tag>
+        ))}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Description: </Text> {selectedMember.description}
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Create Date: </Text> {new Date(selectedMember.createAt).toLocaleString()}
+      </div>
+    </div>
+  ) : null}
+</Modal>
     </Card>
   );
 }
