@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, Avatar, Typography, Select, Spin, message, Space, Button, Tag, Modal } from 'antd';
+import { Card, Table, Avatar, Typography, Select, Spin, message, Space, Button, Tag, Modal, Input } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import api from '../../utils/api';
 
@@ -15,6 +15,8 @@ function Member() {
   const [selectedMember, setSelectedMember] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailVisible, setDetailVisible] = useState(false);
+  const [searchName, setSearchName] = useState('');
+  const [searchSemester, setSearchSemester] = useState('');
 
   const fetchCampuses = async () => {
     try {
@@ -83,38 +85,46 @@ function Member() {
   }
 };
 
+const filteredMembers = members.filter((member) => {
+  const nameMatch = member.student?.user?.username
+    .toLowerCase()
+    .includes(searchName.toLowerCase());
+  const semesterMatch = member.semester?.name
+    .toLowerCase()
+    .includes(searchSemester.toLowerCase());
+  return nameMatch && semesterMatch;
+});
+
   const columns = [
     {
       title: 'Avatar',
       dataIndex: ['student', 'user', 'avatarUrl'],
       key: 'avatar',
+      width: 50,
       render: (avatar) => <Avatar src={avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} />,
     },
     {
       title: 'Name',
       dataIndex: ['student', 'user', 'username'],
       key: 'name',
-    },
-    {
-      title: 'Course',
-      dataIndex: ['course', 'code'],
-      key: 'course',
+      width: 150,
     },
     {
       title: 'Semester',
       dataIndex: ['semester', 'name'],
       key: 'semester',
+      width: 100,
     },
     {
       title: 'Campus',
       dataIndex: ['campus', 'name'],
       key: 'campus',
+      width: 100,
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: 100,
-      fixed: 'right',
+      width: 50,
       render: (_, record) => (
         <Space>
           <Button type="text" 
@@ -134,8 +144,27 @@ function Member() {
 
   return (
     <Card title="Profile list" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <div style={{ marginBottom: 16, display: 'flex', gap: 16 }}>
+        <div>
+            <Input
+            placeholder="Tên thành viên"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            style={{ width: 200, marginLeft: 8 }}
+            />
+        </div>
+        <div>
+            <Input
+            placeholder="Semester"
+            value={searchSemester}
+            onChange={(e) => setSearchSemester(e.target.value)}
+            style={{ width: 200, marginLeft: 8 }}
+            />
+        </div>
+        </div>
+
       <div style={{ marginBottom: 16 }}>
-        <Text strong>Chọn cơ sở: </Text>
+        <Text strong>Campus: </Text>
         <Select
           value={selectedCampus}
           onChange={setSelectedCampus}
@@ -156,7 +185,7 @@ function Member() {
       ) : (
         <Table
           columns={columns}
-          dataSource={members}
+          dataSource={filteredMembers}
           rowKey="id"
           loading={loading}
           pagination={{ ...pagination, showSizeChanger: false }}
