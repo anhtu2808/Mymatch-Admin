@@ -8,27 +8,41 @@ const { Text } = Typography
 function Group() {
   const [teams, setTeams] = useState([])
   const [loading, setLoading] = useState(false)
+  const [pagination, setPagination] = useState({
+  current: 1,
+  pageSize: 10,
+  total: 0,
+});
 
-  const fetchTeams = async () => {
-    setLoading(true)
-    try {
-      const response = await api.get('https://mymatch.social/api/teams?page=1&size=10')
-      if (response.data.code === 200) {
-        setTeams(response.data.result.data)
-      } else {
-        message.error('Không thể tải danh sách nhóm')
-      }
-    } catch (error) {
-      console.error(error)
-      message.error('Lỗi khi tải dữ liệu nhóm')
-    } finally {
-      setLoading(false)
+  const fetchTeams = async (page = 1, size = 10) => {
+  setLoading(true);
+  try {
+    const response = await api.get(`https://mymatch.social/api/teams?page=${page}&size=${size}`);
+    if (response.data.code === 200) {
+      setTeams(response.data.result.data);
+      setPagination({
+        current: response.data.result.currentPage,
+        pageSize: response.data.result.pageSize,
+        total: response.data.result.totalElements,
+      });
+    } else {
+      message.error('Không thể tải danh sách nhóm');
     }
+  } catch (error) {
+    console.error(error);
+    message.error('Lỗi khi tải dữ liệu nhóm');
+  } finally {
+    setLoading(false);
   }
+};
 
   useEffect(() => {
-    fetchTeams()
+    fetchTeams(pagination.current, pagination.pageSize)
   }, [])
+
+  const handleTableChange = (newPagination) => {
+  fetchTeams(newPagination.current, newPagination.pageSize);
+};
 
   const columns = [
     {
@@ -107,7 +121,13 @@ function Group() {
           columns={columns}
           dataSource={teams}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          loading={loading}
+          pagination={{
+          ...pagination,
+          showSizeChanger: false,
+        }}
+          onChange={handleTableChange}
+          bordered
         />
       )}
     </Card>
