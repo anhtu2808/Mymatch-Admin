@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Card, Avatar, Tag, Typography, Spin, message, Space, Button, Modal, Descriptions, Divider } from 'antd'
-import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from '../../utils/api'
 
 const { Text } = Typography
+const { confirm } = Modal;
 
 function Group() {
   const [teams, setTeams] = useState([])
@@ -63,6 +64,30 @@ function Group() {
     }
   };
 
+//   const handleDelete = (record) => {
+//     confirm({
+//       title: 'Bạn có chắc muốn xóa nhóm này?',
+//       icon: <ExclamationCircleOutlined />,
+//       content: `Tên nhóm: ${record.name}`,
+//       okText: 'Xóa',
+//       okType: 'danger',
+//       cancelText: 'Hủy',
+//       async onOk() {
+//         try {
+//           const response = await api.delete(`/teams/${record.id}`);
+//           if (response.status === 204) {
+//             message.success('Xóa nhóm thành công');
+//             await fetchTeams(pagination.current, pagination.pageSize);
+//           } else {
+//             message.error(`Xóa nhóm thất bại (status: ${response.status})`);
+//           }
+//         } catch (error) {
+//           message.error('Lỗi khi xóa nhóm: ' + error.message);
+//         }
+//       },
+//     });
+//   };
+
   const columns = [
     {
       title: 'Hình ảnh',
@@ -114,12 +139,12 @@ function Group() {
             icon={<EyeOutlined />}
             onClick={() => handleViewDetail(record.id)}
           />
-          <Button
+          {/* <Button
             type="text"
             danger
             icon={<DeleteOutlined />}
-            // onClick={() => handleDelete(record)}
-          />
+            onClick={() => handleDelete(record)}
+          /> */}
         </Space>
       ),
     },
@@ -160,16 +185,17 @@ function Group() {
             {selectedTeam && (
               <>
                 <Descriptions bordered column={2} size="small">
-                  <Descriptions.Item label="Tên nhóm" span={2}>{selectedTeam.name}</Descriptions.Item>
-                  <Descriptions.Item label="Mô tả" span={2}>{selectedTeam.description || '-'}</Descriptions.Item>
-                  <Descriptions.Item label="Course Code">{selectedTeam.course.code}</Descriptions.Item>
-                  <Descriptions.Item label="Người tạo">{selectedTeam.createdBy.user.username}</Descriptions.Item>
+                  <Descriptions.Item label="Name" span={2}>{selectedTeam.name}</Descriptions.Item>
+                  <Descriptions.Item label="Description" span={2}>{selectedTeam.description || '-'}</Descriptions.Item>
+                  <Descriptions.Item label="Request ID" span={2}>{selectedTeam.id || '-'}</Descriptions.Item>
+                  <Descriptions.Item label="Course">{selectedTeam.course.code}</Descriptions.Item>
+                  <Descriptions.Item label="Create By">{selectedTeam.createdBy.user.username}</Descriptions.Item>
                   <Descriptions.Item label="Student Code">{selectedTeam.createdBy.studentCode}</Descriptions.Item>
                   <Descriptions.Item label="Email">{selectedTeam.createdBy.user.email}</Descriptions.Item>
-                  <Descriptions.Item label="Kỳ học">{selectedTeam.semester.name}</Descriptions.Item>
-                  <Descriptions.Item label="Cơ sở">{selectedTeam.campus.name}</Descriptions.Item>
-                  <Descriptions.Item label="Số lượng thành viên">{selectedTeam.memberCount}/{selectedTeam.memberMax}</Descriptions.Item>
-                  <Descriptions.Item label="Ngày tạo">{new Date(selectedTeam.createAt).toLocaleString()}</Descriptions.Item>
+                  <Descriptions.Item label="Semester">{selectedTeam.semester.name}</Descriptions.Item>
+                  <Descriptions.Item label="Campus">{selectedTeam.campus.name}</Descriptions.Item>
+                  <Descriptions.Item label="Quantity of member">{selectedTeam.memberCount}/{selectedTeam.memberMax}</Descriptions.Item>
+                  <Descriptions.Item label="Create Date">{new Date(selectedTeam.createAt).toLocaleString()}</Descriptions.Item>
                 </Descriptions>
 
                 <Divider>Danh sách thành viên</Divider>
