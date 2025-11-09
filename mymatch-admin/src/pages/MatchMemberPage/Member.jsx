@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, Avatar, Typography, Select, Spin, message, Space, Button, Tag, Modal, Input } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import api from '../../utils/api';
 
 const { Text } = Typography;
 const { Option } = Select;
+const { confirm } = Modal;
 
 function Member() {
   const [campuses, setCampuses] = useState([]);
@@ -84,6 +85,29 @@ function Member() {
     setDetailLoading(false);
   }
 };
+
+// const handleDelete = (record) => {
+//   confirm({
+//     title: 'Xác nhận xóa thành viên?',
+//     content: `Bạn có chắc muốn xóa thành viên ${record.student.user.username}?`,
+//     okText: 'Xóa',
+//     okType: 'danger',
+//     cancelText: 'Hủy',
+//     onOk: async () => {
+//       try {
+//         const response = await api.delete(`/student-requests/${record.id}`);
+//         if (response.status === 204) {
+//           message.success('Xóa thành viên thành công');
+//           await fetchMembers(pagination.current, pagination.pageSize);
+//         } else {
+//           message.error('Xóa thất bại');
+//         }
+//       } catch (error) {
+//         message.error('Lỗi khi xóa thành viên');
+//       }
+//     },
+//   });
+// };
 
 const filteredMembers = members.filter((member) => {
   const nameMatch = member.student?.user?.username
@@ -220,6 +244,9 @@ const filteredMembers = members.filter((member) => {
         </div>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Text strong>Request ID: </Text> {selectedMember.id}
+      </div>
       <div style={{ marginBottom: 16 }}>
         <Text strong>Class: </Text> {selectedMember.classCode}
       </div>
