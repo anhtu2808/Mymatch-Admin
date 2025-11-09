@@ -7,6 +7,7 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 const SwapClassPage = () => {
+  const [originalData, setOriginalData] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -32,6 +33,7 @@ const SwapClassPage = () => {
       const response = await api.get(`/swap-requests?page=${page}&size=${size}`);
       const result = response.data;
       if (result.code === 200) {
+        setOriginalData(result.result.data);
         setData(result.result.data);
         setPagination({
             current: result.result.currentPage,
@@ -53,8 +55,19 @@ const SwapClassPage = () => {
   };
 
   const handleSearch = () => {
-    fetchData(1, pagination.pageSize);
-  };
+  const filtered = originalData.filter((item) => {
+    const fullName = `${item.student?.user?.firstName || ''} ${item.student?.user?.lastName || ''}`.toLowerCase();
+    const studentNameMatch = fullName.includes(filters.studentName.toLowerCase());
+
+    const courseName = item.course?.code?.toLowerCase() || '';
+    const courseNameMatch = courseName.includes(filters.courseName.toLowerCase());
+
+    const statusMatch = filters.status ? item.status === filters.status : true;
+
+    return studentNameMatch && courseNameMatch && statusMatch;
+  });
+  setData(filtered);
+};
 
   const handleReset = () => {
     setFilters({
@@ -62,7 +75,7 @@ const SwapClassPage = () => {
       courseName: '',
       status: '',
     });
-    fetchData(1, pagination.pageSize);
+    setData(originalData);
   };
 
   const handleViewDetail = async (record) => {
@@ -239,9 +252,9 @@ const handleDelete = (record) => {
           allowClear
         >
           <Option value="COMPLETED">Completed</Option>
-          <Option value="PENDING">Pending</Option>
+          <Option value="SENT">Sent</Option>
           <Option value="REJECTED">Rejected</Option>
-          <Option value="CANCELLED">Cancelled</Option>
+          <Option value="EXPIRED">Expired</Option>
         </Select>
         <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
           Search
