@@ -274,7 +274,6 @@ const handleDelete = (record) => {
           showSizeChanger: false,
         }}
         onChange={handleTableChange}
-        scroll={{ x: 1500 }}
         bordered
       />
 
