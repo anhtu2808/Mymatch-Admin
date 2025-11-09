@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Layout as AntLayout, Drawer, Button } from 'antd'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { MenuOutlined } from '@ant-design/icons'
 import SideBar from '../Sidebar/SideBar'
 import useIsMobile from '../../hooks/useIsMobile'
+import logo from "../../assets/logo.gif"
 
 const { Header, Sider, Content } = AntLayout
 
@@ -16,11 +17,22 @@ const Layout = ({ children, headerContent }) => {
     if (isMobile) setDrawerOpen(false)
   }
 
+  const navigation = useNavigate()
+
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
       {!isMobile && (
         <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} breakpoint="lg" theme="light" style={{ background: '#fff' }}>
-          <div style={{ height: 64, margin: 16, background: 'rgba(0, 0, 0, 0.05)', borderRadius: 8 }} />
+          <div />
+            <div className="logoSection" onClick={() => navigation("/")}>
+          <div className="logo-video-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}> 
+            <img 
+              src={logo} 
+              alt="MyMatch Logo Animation" 
+              style={{ height: "100px", width: "100px" }}
+            />
+          </div>
+        </div>
           <SideBar onNavigate={handleNavigate} />
         </Sider>
       )}

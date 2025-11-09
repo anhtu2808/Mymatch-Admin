@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Menu } from 'antd'
-import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined } from '@ant-design/icons'
+import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined, SwapOutlined, UsergroupAddOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
@@ -10,6 +10,8 @@ const SideBar = ({ onNavigate }) => {
 
   const items = useMemo(() => [
     { key: '/', icon: <PieChartOutlined />, label: 'Dashboard' },
+    { key: '/swap-class', icon: <SwapOutlined />, label: 'Swap Class' },
+    { key: '/match-member', icon: <UsergroupAddOutlined />, label: 'Match member' },
     { key: '/materials', icon: <AppstoreOutlined />, label: 'Materials' },
     { key: '/reviews', icon: <FileTextOutlined />, label: 'Reviews' },
     { key: '/review-criterias', icon: <FileDoneOutlined />, label: 'Review Criterias' },
