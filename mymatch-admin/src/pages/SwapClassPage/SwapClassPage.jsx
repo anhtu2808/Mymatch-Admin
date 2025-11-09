@@ -66,7 +66,7 @@ const SwapClassPage = () => {
   };
 
   const handleViewDetail = async (record) => {
-  setLoading(true); // show loading khi fetch chi tiết
+  setLoading(true);
   try {
     const response = await api.get(`/swap-requests/${record.id}`);
     const result = response.data;
@@ -106,7 +106,6 @@ const handleDelete = (record) => {
     }
   });
 };
-
 
   const getStatusTag = (status) => {
     const statusConfig = {
@@ -259,7 +258,7 @@ const handleDelete = (record) => {
         loading={loading}
         pagination={{
           ...pagination,
-          showSizeChanger: false, // ẩn select pageSize để giữ cố định 10 bản ghi
+          showSizeChanger: false,
         }}
         onChange={handleTableChange}
         scroll={{ x: 1500 }}
