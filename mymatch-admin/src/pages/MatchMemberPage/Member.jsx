@@ -11,6 +11,7 @@ function Member() {
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
   const fetchCampuses = async () => {
     try {
@@ -28,13 +29,18 @@ function Member() {
     }
   };
 
-  const fetchMembers = async (campusId) => {
+  const fetchMembers = async (campusId, page = 1, size = 10) => {
     if (!campusId) return;
     setLoading(true);
     try {
-      const res = await api.get(`https://mymatch.social/api/student-requests?campusId=${campusId}&page=1&size=10`);
-      if (res.data.code === 200) {
-        setMembers(res.data.result.data);
+      const response = await api.get(`https://mymatch.social/api/student-requests?campusId=${campusId}&page=${page}&size=${size}`);
+      if (response.data.code === 200) {
+        setMembers(response.data.result.data);
+        setPagination({
+          current: response.data.result.currentPage,
+          pageSize: response.data.result.pageSize,
+          total: response.data.result.totalElements,
+        });
       } else {
         message.error('Không thể tải danh sách thành viên');
       }
@@ -50,8 +56,12 @@ function Member() {
   }, []);
 
   useEffect(() => {
-    fetchMembers(selectedCampus);
+    fetchMembers(selectedCampus, pagination.current, pagination.pageSize);
   }, [selectedCampus]);
+
+  const handleTableChange = (newPagination) => {
+    fetchMembers(selectedCampus, newPagination.current, newPagination.pageSize);
+  };
 
   const columns = [
     {
@@ -61,22 +71,22 @@ function Member() {
       render: (avatar) => <Avatar src={avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} />,
     },
     {
-      title: 'Tên',
+      title: 'Name',
       dataIndex: ['student', 'user', 'username'],
       key: 'name',
     },
     {
-      title: 'Khóa học',
+      title: 'Course',
       dataIndex: ['course', 'code'],
       key: 'course',
     },
     {
-      title: 'Kỳ học',
+      title: 'Semester',
       dataIndex: ['semester', 'name'],
       key: 'semester',
     },
     {
-      title: 'Cơ sở',
+      title: 'Campus',
       dataIndex: ['campus', 'name'],
       key: 'campus',
     },
@@ -103,7 +113,7 @@ function Member() {
   ];
 
   return (
-    <Card title="Danh sách thành viên" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+    <Card title="Profile list" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
       <div style={{ marginBottom: 16 }}>
         <Text strong>Chọn cơ sở: </Text>
         <Select
@@ -128,7 +138,9 @@ function Member() {
           columns={columns}
           dataSource={members}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          loading={loading}
+          pagination={{ ...pagination, showSizeChanger: false }}
+          onChange={handleTableChange}
           bordered
         />
       )}
