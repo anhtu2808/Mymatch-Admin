@@ -65,10 +65,23 @@ const SwapClassPage = () => {
     fetchData(1, pagination.pageSize);
   };
 
-  const handleViewDetail = (record) => {
-    setSelectedRecord(record);
-    setDetailVisible(true);
-  };
+  const handleViewDetail = async (record) => {
+  setLoading(true); // show loading khi fetch chi tiết
+  try {
+    const response = await api.get(`/swap-requests/${record.id}`);
+    const result = response.data;
+    if (result.code === 200) { // code 0 là thành công theo response mẫu
+      setSelectedRecord(result.result);
+      setDetailVisible(true);
+    } else {
+      message.error('Failed to fetch swap request detail');
+    }
+  } catch (error) {
+    message.error('Error fetching swap request detail: ' + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDelete = (record) => {
     confirm({
@@ -89,9 +102,11 @@ const SwapClassPage = () => {
   const getStatusTag = (status) => {
     const statusConfig = {
       COMPLETED: { color: 'green', text: 'Completed' },
-      PENDING: { color: 'orange', text: 'Pending' },
+      PENDING: { color: 'yellow', text: 'Pending' },
       REJECTED: { color: 'red', text: 'Rejected' },
-      CANCELLED: { color: 'default', text: 'Cancelled' },
+      CANCELLED: { color: 'red', text: 'Cancelled' },
+      SENT: { color: 'blue', text: 'Sent' },
+      EXPIRED: { color: 'purple', text: 'Expired' },
     };
     const config = statusConfig[status] || { color: 'default', text: status };
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -119,13 +134,13 @@ const SwapClassPage = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 60,
+      width: 40,
       sorter: true,
     },
     {
       title: 'Student',
       key: 'student',
-      width: 200,
+      width: 150,
       render: (_, record) => (
         <div>
           <div style={{ fontWeight: 500 }}>
@@ -141,67 +156,11 @@ const SwapClassPage = () => {
       title: 'Course',
       dataIndex: ['course', 'name'],
       key: 'course',
-      width: 200,
+      width: 100,
       render: (text, record) => (
         <div>
           <div style={{ fontWeight: 500 }}>{record.course.code}</div>
           <div style={{ fontSize: '12px', color: '#888' }}>{text}</div>
-        </div>
-      ),
-    },
-    {
-      title: 'From Class',
-      key: 'fromClass',
-      width: 150,
-      render: (_, record) => (
-        <div>
-          <div style={{ fontWeight: 500 }}>{record.fromClass}</div>
-          <div style={{ fontSize: '11px' }}>{getDayTags(record.fromDays)}</div>
-          <div style={{ fontSize: '11px', color: '#888', marginTop: 4 }}>
-            {record.slotFrom.replace('SLOT_', 'Slot ')}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'To Class',
-      key: 'toClass',
-      width: 150,
-      render: (_, record) => (
-        <div>
-          <div style={{ fontWeight: 500 }}>{record.targetClass}</div>
-          <div style={{ fontSize: '11px' }}>{getDayTags(record.toDays)}</div>
-          <div style={{ fontSize: '11px', color: '#888', marginTop: 4 }}>
-            {record.slotTo.replace('SLOT_', 'Slot ')}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Lecturer From',
-      dataIndex: ['lecturerFrom', 'name'],
-      key: 'lecturerFrom',
-      width: 150,
-      render: (text, record) => (
-        <div>
-          <div>{text}</div>
-          <div style={{ fontSize: '12px', color: '#888' }}>
-            {record.lecturerFrom.code}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Lecturer To',
-      dataIndex: ['lecturerTo', 'name'],
-      key: 'lecturerTo',
-      width: 150,
-      render: (text, record) => (
-        <div>
-          <div>{text}</div>
-          <div style={{ fontSize: '12px', color: '#888' }}>
-            {record.lecturerTo.code}
-          </div>
         </div>
       ),
     },
@@ -329,6 +288,12 @@ const SwapClassPage = () => {
               </Descriptions.Item>
               <Descriptions.Item label="Major">
                 {selectedRecord.student.major}
+              </Descriptions.Item>
+              <Descriptions.Item label="Coin">
+                {selectedRecord.student.user.wallet?.coin ?? 0}
+              </Descriptions.Item>
+              <Descriptions.Item label="Campus">
+                {selectedRecord.student.campus?.name || '-'}
               </Descriptions.Item>
               <Descriptions.Item label="Status">
                 {getStatusTag(selectedRecord.status)}
