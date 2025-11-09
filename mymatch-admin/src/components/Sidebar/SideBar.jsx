@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
-import { Menu } from 'antd'
+import { Button, Menu } from 'antd'
 import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined, SwapOutlined, UsergroupAddOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
+import api from '../../utils/api'
 
 
 const SideBar = ({ onNavigate }) => {
@@ -25,7 +26,22 @@ const SideBar = ({ onNavigate }) => {
     if (onNavigate) onNavigate(key)
   }
 
+const handleLogout = async () => {
+  const accessToken = localStorage.getItem('access_token');
+
+  try {
+    await api.post('/auth/logout', { token: accessToken }); 
+  } catch (error) {
+    console.error('Đăng xuất thất bại:', error);
+  } finally {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    navigate('/login');
+  }
+};
+
   return (
+    <>
     <Menu
       theme="light"
       mode="inline"
@@ -34,6 +50,9 @@ const SideBar = ({ onNavigate }) => {
       onClick={onClick}
       style={{ background: '#fff' }}
     />
+    
+    <Button onClick={() => handleLogout()}>Logout</Button>
+    </>
   )
 }
 
