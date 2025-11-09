@@ -100,7 +100,7 @@ function Group() {
 
   const columns = [
     {
-      title: 'Image',
+      title: 'Avatar',
       dataIndex: 'image',
       key: 'image',
       width: 50,
@@ -130,7 +130,7 @@ function Group() {
   ];
 
   return (
-    <Card title="Danh sách nhóm" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+    <Card title="Group list" bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
       {/* Search filters */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col>
