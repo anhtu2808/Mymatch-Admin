@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
 import { Button, Menu } from 'antd'
-import { PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined, FileDoneOutlined, SwapOutlined, UsergroupAddOutlined, LogoutOutlined } from '@ant-design/icons'
+import {
+  PieChartOutlined, TeamOutlined, SettingOutlined, FileTextOutlined, AppstoreOutlined, BookOutlined,
+  FileDoneOutlined, SwapOutlined, UsergroupAddOutlined, LogoutOutlined, EnvironmentOutlined, BankOutlined
+} from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../utils/api'
 
@@ -11,12 +14,14 @@ const SideBar = ({ onNavigate }) => {
 
   const items = useMemo(() => [
     { key: '/', icon: <PieChartOutlined />, label: 'Dashboard' },
+    { key: '/universities', icon: <BankOutlined />, label: 'Universities' },
+    { key: '/campus', icon: <EnvironmentOutlined />, label: 'Campus' },
     { key: '/swap-class', icon: <SwapOutlined />, label: 'Swap Class' },
     { key: '/match-member', icon: <UsergroupAddOutlined />, label: 'Match member' },
     { key: '/materials', icon: <AppstoreOutlined />, label: 'Materials' },
     { key: '/reviews', icon: <FileTextOutlined />, label: 'Reviews' },
     { key: '/review-criterias', icon: <FileDoneOutlined />, label: 'Review Criterias' },
-    { key: '/users', icon: <TeamOutlined />, label: 'Users' },
+    { key: '/users', icon: <TeamOutlined />, label: 'Lecturers' },
     { key: '/courses', icon: <BookOutlined />, label: 'Courses' },
     { key: '/settings', icon: <SettingOutlined />, label: 'Settings' },
   ], [])
@@ -26,22 +31,22 @@ const SideBar = ({ onNavigate }) => {
     if (onNavigate) onNavigate(key)
   }
 
-const handleLogout = async () => {
-  const accessToken = localStorage.getItem('access_token');
+  const handleLogout = async () => {
+    const accessToken = localStorage.getItem('access_token');
 
-  try {
-    await api.post('/auth/logout', { token: accessToken }); 
-  } catch (error) {
-    console.error('Đăng xuất thất bại:', error);
-  } finally {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    navigate('/login');
-  }
-};
+    try {
+      await api.post('/auth/logout', { token: accessToken });
+    } catch (error) {
+      console.error('Đăng xuất thất bại:', error);
+    } finally {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      navigate('/login');
+    }
+  };
 
   return (
-     <div
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -49,16 +54,16 @@ const handleLogout = async () => {
         background: '#fff',
       }}
     >
-    <Menu
-      theme="light"
-      mode="inline"
-      selectedKeys={[location.pathname]}
-      items={items}
-      onClick={onClick}
-      style={{ background: '#fff' }}
-    />
-    
-    <div
+      <Menu
+        theme="light"
+        mode="inline"
+        selectedKeys={[location.pathname]}
+        items={items}
+        onClick={onClick}
+        style={{ background: '#fff' }}
+      />
+
+      <div
         style={{
           padding: '16px',
           borderTop: '1px solid #f0f0f0',
@@ -79,7 +84,7 @@ const handleLogout = async () => {
           Logout
         </Button>
       </div>
-    </div>  
+    </div>
   )
 }
 
