@@ -87,6 +87,10 @@ export const deleteLecturerAPI = async (id) => {
   return response.data;
 }
 
+export const createLecturerAPI = async (data) => {
+  const response = await api.post('/lecturers', data);
+  return response.data;
+}
 
 // Review API
 export const getReviewsAPI = async (params = {}) => {
