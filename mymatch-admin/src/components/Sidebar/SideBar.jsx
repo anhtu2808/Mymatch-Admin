@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../utils/api'
 
 
-const SideBar = ({ onNavigate }) => {
+const SideBar = ({ onNavigate, collapsed }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -46,7 +46,7 @@ const handleLogout = async () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        background: '#fff',
+        background: '#fcfcfc',
       }}
     >
     <Menu
@@ -55,14 +55,14 @@ const handleLogout = async () => {
       selectedKeys={[location.pathname]}
       items={items}
       onClick={onClick}
-      style={{ background: '#fff' }}
+      style={{ background: '#fcfcfc' }}
     />
     
     <div
         style={{
           padding: '16px',
           borderTop: '1px solid #f0f0f0',
-          background: '#fff',
+          background: '#fcfcfc',
         }}
       >
         <Button
@@ -76,7 +76,7 @@ const handleLogout = async () => {
             borderRadius: 8,
           }}
         >
-          Logout
+          {!collapsed && 'Logout'}
         </Button>
       </div>
     </div>  
