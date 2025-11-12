@@ -87,6 +87,10 @@ export const deleteLecturerAPI = async (id) => {
   return response.data;
 }
 
+export const createLecturerAPI = async (data) => {
+  const response = await api.post('/lecturers', data);
+  return response.data;
+}
 
 // Review API
 export const getReviewsAPI = async (params = {}) => {
@@ -189,11 +193,12 @@ export const deleteCourseAPI = async (id) => {
 
 // University API
 export const getAllUniversitiesAPI = async (params = {}) => {
-  const page = params.page || 1;
-  const size = params.size || 1000;
-  const sort = params.sort || 'id';
+  let url = `/universities?page=${params.page || 1}&size=${params.size || 10}&sort=${params.sort || 'id'}`;
+  if (params.name && params.name !== '') {
+    url += `&name=${params.name}`;
+  }
 
-  const response = await api.get(`/universities?page=${page}&size=${size}&sort=${sort}`);
+  const response = await api.get(url);
   return response.data;
 }
 
@@ -202,6 +207,20 @@ export const getUniversityByIdAPI = async (id) => {
   return response.data;
 }
 
+export const createUniversityAPI = async (data) => {
+  const response = await api.post('/universities', data);
+  return response.data;
+}
+
+export const updateUniversityAPI = async (id, data) => {
+  const response = await api.put(`/universities/${id}`, data);
+  return response.data;
+}
+
+export const deleteUniversityAPI = async (id) => {
+  const response = await api.delete(`/universities/${id}`);
+  return response.data;
+}
 
 // Review Criteria API
 export const getReviewCriteriaAPI = async (params = {}) => {
@@ -281,4 +300,41 @@ export const downloadMaterialAPI = async (id) => {
     responseType: 'blob',
   });
   return response;
+}
+
+
+// Campus API
+export const getCampusesAPI = async (params = {}) => {
+  let url = `/campuses?page=${params.page || 1}&size=${params.size || 10}&sort=${params.sort || 'id'}`;
+
+  if (params.name && params.name !== '') {
+    url += `&name=${params.name}`;
+  }
+
+  if (params.address && params.address !== '') {
+    url += `&address=${params.address}`;
+  }
+
+  const response = await api.get(url);
+  return response.data;
+}
+
+export const getCampusDetailAPI = async (id) => {
+  const response = await api.get(`/campuses/${id}`);
+  return response.data;
+}
+
+export const createCampusAPI = async (data) => {
+  const response = await api.post('/campuses', data);
+  return response.data;
+}
+
+export const updateCampusAPI = async (id, data) => {
+  const response = await api.put(`/campuses/${id}`, data);
+  return response.data;
+}
+
+export const deleteCampusAPI = async (id) => {
+  const response = await api.delete(`/campuses/${id}`);
+  return response.data;
 }
