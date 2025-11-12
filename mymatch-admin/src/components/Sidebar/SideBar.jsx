@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../utils/api'
 
 
-const SideBar = ({ onNavigate }) => {
+const SideBar = ({ onNavigate, collapsed }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -51,23 +51,23 @@ const SideBar = ({ onNavigate }) => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        background: '#fff',
+        background: '#fcfcfc',
       }}
     >
-      <Menu
-        theme="light"
-        mode="inline"
-        selectedKeys={[location.pathname]}
-        items={items}
-        onClick={onClick}
-        style={{ background: '#fff' }}
-      />
-
-      <div
+    <Menu
+      theme="light"
+      mode="inline"
+      selectedKeys={[location.pathname]}
+      items={items}
+      onClick={onClick}
+      style={{ background: '#fcfcfc' }}
+    />
+    
+    <div
         style={{
           padding: '16px',
           borderTop: '1px solid #f0f0f0',
-          background: '#fff',
+          background: '#fcfcfc',
         }}
       >
         <Button
@@ -81,7 +81,7 @@ const SideBar = ({ onNavigate }) => {
             borderRadius: 8,
           }}
         >
-          Logout
+          {!collapsed && 'Logout'}
         </Button>
       </div>
     </div>
