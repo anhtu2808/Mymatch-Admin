@@ -18,7 +18,7 @@ export const UserPage = () => {
   return (
     <div className="px-4">
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane tab="Lecturer" key="lecturer">
+        <TabPane tab="Lecturers" key="lecturer">
           <LecturerPage />
         </TabPane>
       </Tabs>
