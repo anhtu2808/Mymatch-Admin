@@ -66,29 +66,29 @@ function Group() {
     }
   };
 
-  //   const handleDelete = (record) => {
-//     confirm({
-//       title: 'Bạn có chắc muốn xóa nhóm này?',
-//       icon: <ExclamationCircleOutlined />,
-//       content: `Tên nhóm: ${record.name}`,
-//       okText: 'Xóa',
-//       okType: 'danger',
-//       cancelText: 'Hủy',
-//       async onOk() {
-//         try {
-//           const response = await api.delete(`/teams/${record.id}`);
-//           if (response.status === 204) {
-//             message.success('Xóa nhóm thành công');
-//             await fetchTeams(pagination.current, pagination.pageSize);
-//           } else {
-//             message.error(`Xóa nhóm thất bại (status: ${response.status})`);
-//           }
-//         } catch (error) {
-//           message.error('Lỗi khi xóa nhóm: ' + error.message);
-//         }
-//       },
-//     });
-//   };
+    const handleDelete = (record) => {
+    confirm({
+      title: 'Bạn có chắc muốn xóa nhóm này?',
+      icon: <ExclamationCircleOutlined />,
+      content: `Tên nhóm: ${record.name}`,
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      async onOk() {
+        try {
+          const response = await api.delete(`/teams/${record.id}`);
+          if (response.status === 200) {
+            message.success('Xóa nhóm thành công');
+            await fetchTeams(pagination.current, pagination.pageSize);
+          } else {
+            message.error(`Xóa nhóm thất bại (status: ${response.status})`);
+          }
+        } catch (error) {
+          message.error('Lỗi khi xóa nhóm: ' + error.message);
+        }
+      },
+    });
+  };
 
   const filteredTeams = teams.filter((team) => {
     return (
@@ -118,12 +118,12 @@ function Group() {
       render: (_, record) => (
         <Space>
           <Button type="text" icon={<EyeOutlined />} onClick={() => handleViewDetail(record.id)} />
-          {/* <Button
+          <Button
             type="text"
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-          /> */}
+          />
         </Space>
       ),
     },
