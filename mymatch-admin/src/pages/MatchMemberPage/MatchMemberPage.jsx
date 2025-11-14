@@ -9,7 +9,7 @@ const { TabPane } = Tabs
 function MatchMemberPage() {
   return (
     <div style={{ padding: '24px', background: '#fff' }}>
-      <h2 style={{ marginBottom: '24px' }}>Swap Request Management</h2>
+      <h2 style={{ marginBottom: '24px' }}>Match Member Management</h2>
         <Tabs
           defaultActiveKey="1"
           type="card"
