@@ -86,28 +86,28 @@ function Member() {
   }
 };
 
-// const handleDelete = (record) => {
-//   confirm({
-//     title: 'Xác nhận xóa thành viên?',
-//     content: `Bạn có chắc muốn xóa thành viên ${record.student.user.username}?`,
-//     okText: 'Xóa',
-//     okType: 'danger',
-//     cancelText: 'Hủy',
-//     onOk: async () => {
-//       try {
-//         const response = await api.delete(`/student-requests/${record.id}`);
-//         if (response.status === 204) {
-//           message.success('Xóa thành viên thành công');
-//           await fetchMembers(pagination.current, pagination.pageSize);
-//         } else {
-//           message.error('Xóa thất bại');
-//         }
-//       } catch (error) {
-//         message.error('Lỗi khi xóa thành viên');
-//       }
-//     },
-//   });
-// };
+const handleDelete = (record) => {
+  confirm({
+    title: 'Xác nhận xóa thành viên?',
+    content: `Bạn có chắc muốn xóa thành viên ${record.student.user.username}?`,
+    okText: 'Xóa',
+    okType: 'danger',
+    cancelText: 'Hủy',
+    onOk: async () => {
+      try {
+        const response = await api.delete(`/student-requests/${record.id}`);
+        if (response.status === 204) {
+          message.success('Xóa thành viên thành công');
+          await fetchMembers(selectedCampus, pagination.current, pagination.pageSize);
+        } else {
+          message.error('Xóa thất bại');
+        }
+      } catch (error) {
+        message.error('Lỗi khi xóa thành viên');
+      }
+    },
+  });
+};
 
 const filteredMembers = members.filter((member) => {
   const nameMatch = member.student?.user?.username
@@ -155,12 +155,12 @@ const filteredMembers = members.filter((member) => {
             icon={<EyeOutlined />} 
             onClick={() => fetchMemberDetail(record.id)}
             />
-          {/* <Button
+          <Button
             type="text"
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-          /> */}
+          />
         </Space>
       ),
     },
