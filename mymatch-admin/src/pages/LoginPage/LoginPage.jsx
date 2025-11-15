@@ -5,6 +5,7 @@ import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_ROOT } from "../../utils/constant";
+import backgroundImg from "../../assets/background1.png";
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -24,7 +25,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" 
+      style={{ 
+        backgroundImage: `url(${backgroundImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
       <Card className="login-card" title="Login">
         <Form
           name="login"
