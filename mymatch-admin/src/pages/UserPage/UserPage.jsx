@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import './UserPage.css'
 import { Tabs } from 'antd'
-import { useInternalNotification } from 'antd/es/notification/useNotification';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LecturerPage from '../LecturerPage/LecturerPage';
+import StudentPage from '../StudentPage/StudentPage';
 
 
 export const UserPage = () => {
   const { TabPane } = Tabs;
   const [reloadFlag, setReloadFlag] = useState(0);
-  const location = useInternalNotification();
+  const location = useLocation();
+
   const activeTab = new URLSearchParams(location.search).get('tab') || 'lecturer';
   const navigate = useNavigate();
   const setActiveTab = (key) => {
@@ -20,6 +21,9 @@ export const UserPage = () => {
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
         <TabPane tab="Lecturers" key="lecturer">
           <LecturerPage />
+        </TabPane>
+        <TabPane tab="Students" key="student">
+          <StudentPage />
         </TabPane>
       </Tabs>
     </div>

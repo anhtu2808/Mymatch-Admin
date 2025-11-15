@@ -48,7 +48,57 @@ export const deletePermissionAPI = async (id) => {
 
 
 // User API
+export const getUsersAPI = async (params = {}) => {
+  let url = `/users?page=${params.page || 0}&size=${params.size || 10}&sort=${params.sort || 'id'}`;
 
+  if (params.role && params.role !== '') {
+    url += `&role=${params.role}`;
+  }
+  if (params.deleted !== undefined) {
+    url += `&deleted=${params.deleted}`;
+  }
+  if (params.isActive !== undefined) {
+    url += `&isActive=${params.isActive}`;
+  }
+  if (params.username && params.username !== '') {
+    url += `&username=${params.username}`;
+  }
+  if (params.email && params.email !== '') {
+    url += `&email=${params.email}`;
+  }
+  if (params.search && params.search !== '') {
+    url += `&search=${params.search}`;
+  }
+  if (params.universityId && params.universityId !== 0) {
+    url += `&universityId=${params.universityId}`;
+  }
+  if (params.campusId && params.campusId !== 0) {
+    url += `&campusId=${params.campusId}`;
+  }
+
+  const response = await api.get(url);
+  return response.data;
+}
+
+export const getUserDetailAPI = async (id) => {
+  const response = await api.get(`/users/${id}`);
+  return response.data;
+}
+
+export const updateUserAPI = async (id, data) => {
+  const response = await api.put(`/users/${id}`, data);
+  return response.data;
+}
+
+export const banUserAPI = async (id) => {
+  const response = await api.put(`/users/${id}/ban`);
+  return response.data;
+}
+
+export const unbanUserAPI = async (id) => {
+  const response = await api.put(`/users/${id}/unban`);
+  return response.data;
+}
 
 // Material API
 
