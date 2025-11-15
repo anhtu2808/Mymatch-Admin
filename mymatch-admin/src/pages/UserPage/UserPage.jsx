@@ -22,7 +22,7 @@ export const UserPage = () => {
         <TabPane tab="Lecturers" key="lecturer">
           <LecturerPage />
         </TabPane>
-        <TabPane tab="Users" key="user">
+        <TabPane tab="Students" key="student">
           <StudentPage />
         </TabPane>
       </Tabs>
