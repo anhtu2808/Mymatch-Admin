@@ -76,6 +76,7 @@ const DashboardPage = () => {
   const [studentsData, setStudentsData] = useState([]);
   const [swapsData, setSwapsData] = useState([]);
   const [transactionsData, setTransactionsData] = useState([]);
+  const [revenueGroupBy, setRevenueGroupBy] = useState('DAY');
 
   // Pagination states
   const [usersPagination, setUsersPagination] = useState({ current: 1, pageSize: 10, total: 0 });
@@ -91,7 +92,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     fetchAllData();
-  }, [filters]);
+  }, [filters, revenueGroupBy]);
 
   // --- API CALLS ---
 
@@ -149,9 +150,34 @@ const DashboardPage = () => {
 
   const fetchRevenueTrend = async () => {
     try {
-      const response = await api.get('/api/dashboard/charts/revenue-trend', { params: filters });
+      // Thêm groupBy vào params
+      const params = { ...filters, groupBy: revenueGroupBy };
+      const response = await api.get('/api/dashboard/charts/revenue-trend', { params });
+      
       if (response.data.code === 200) {
-        setRevenueData(response.data.result);
+        const rawData = response.data.result;
+        
+        // Map dữ liệu từ API (revenue) sang format của Recharts (value)
+        const chartData = rawData.map(item => {
+          let formattedDate = item.date;
+          // Format lại ngày hiển thị cho đẹp tùy theo groupBy
+          if (item.date) {
+             if (revenueGroupBy === 'YEAR') {
+                formattedDate = item.date.substring(0, 4); // 2025
+             } else if (revenueGroupBy === 'MONTH') {
+                formattedDate = item.date.substring(0, 7); // 2025-11
+             } else {
+                formattedDate = item.date.split('T')[0]; // 2025-11-07
+             }
+          }
+
+          return {
+            date: formattedDate,
+            value: item.revenue // API trả về 'revenue', Chart đang dùng 'value'
+          };
+        });
+
+        setRevenueData(chartData);
       }
     } catch (error) {
       console.error('Error fetching revenue trend:', error);
@@ -160,9 +186,36 @@ const DashboardPage = () => {
 
   const fetchTransactionTrend = async () => {
     try {
-      const response = await api.get('/api/dashboard/charts/transaction-trend', { params: filters });
+      // THAY ĐỔI: Gọi API bảng (tables) thay vì API biểu đồ (charts)
+      // Lưu ý: Đặt size lớn (ví dụ 100) để lấy đủ dữ liệu cho biểu đồ vì API này có phân trang
+      const params = { ...filters, page: 1, size: 100 }; 
+      const response = await api.get('/api/dashboard/tables/transactions', { params });
+
       if (response.data.code === 200) {
-        setTransactionTrendData(response.data.result);
+        const rawData = response.data.result.data;
+        
+        // XỬ LÝ DỮ LIỆU: Gom nhóm theo ngày
+        const groupedData = rawData.reduce((acc, item) => {
+          // item.createAt có dạng "2025-11-15T07:06:13..." -> cắt lấy phần ngày "2025-11-15"
+          const date = item.createAt ? item.createAt.split('T')[0] : 'N/A';
+          
+          if (!acc[date]) {
+            acc[date] = 0;
+          }
+          acc[date] += 1; // Đếm số lượng giao dịch (value = số lượng)
+          return acc;
+        }, {});
+
+        // CHUYỂN ĐỔI: Sang định dạng mảng mà Recharts yêu cầu [{ date: '...', value: ... }]
+        const chartData = Object.keys(groupedData).map(date => ({
+          date: date,
+          value: groupedData[date]
+        }));
+
+        // SẮP XẾP: Đảm bảo ngày hiển thị từ cũ đến mới
+        chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        setTransactionTrendData(chartData);
       }
     } catch (error) {
       console.error('Error fetching transaction trend:', error);
@@ -524,39 +577,74 @@ const DashboardPage = () => {
 
         {/* Charts Row 2 - Transaction Chart */}
         <Row gutter={16} style={{ marginBottom: 24 }}>
-          <Col xs={24} lg={12}>
-            <Card title="Transaction Trend (Line Chart)">
+          <Col xs={24} lg={16}>
+            <Card 
+          style={{ marginTop: 24 }} 
+          title="Revenue Statistics"
+          extra={
+            <Select 
+              defaultValue="DAY" 
+              value={revenueGroupBy} 
+              onChange={(value) => setRevenueGroupBy(value)} 
+              style={{ width: 120 }}
+            >
+              <Option value="DAY">Day</Option>
+              <Option value="MONTH">Month</Option>
+              <Option value="YEAR">Year</Option>
+            </Select>
+          }
+        >
+           {/* Sử dụng lại Component RevenueChart đã có sẵn trong file */}
+           <RevenueChart data={revenueData} />
+        </Card>
+
+        <Card title="Transaction Trend (Line Chart)">
               <TransactionChart data={transactionTrendData} />
             </Card>
           </Col>
 
-          <Col xs={24} lg={12}>
-             {/* Swap Success Rate moved here to balance layout */}
-            <Card title="Swap Success Rate">
-              <Row gutter={16}>
-                <Col xs={24} md={12}>
+          <Col xs={24} lg={8}>
+            <Card title="Swap Success Rate" style={{ height: '100%' }}> {/* height 100% để card dài bằng bên trái nếu cần */}
+              {/* Thay đổi layout bên trong: Xếp dọc (column) thay vì Row/Col ngang */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                
+                {/* Phần biểu đồ tròn nằm trên */}
+                <div style={{ width: '100%', height: 250 }}> {/* Giảm chiều cao chart một chút cho cân đối */}
                   <PieChartComponent data={pieData} />
-                </Col>
-                <Col xs={24} md={12}>
-                  <div style={{ padding: '40px 0' }}>
-                    <Statistic 
-                      title="Success Rate" 
-                      value={swapSuccessData?.successRate || 0} 
-                      precision={2} // [ĐÃ SỬA] Lấy 2 chữ số thập phân
-                      suffix="%" 
-                      valueStyle={{ fontSize: 48, color: '#52c41a' }} 
-                    />
-                    <div style={{ marginTop: 24 }}>
-                      <Space direction="vertical" style={{ width: '100%' }}>
-                        <Statistic title="Total Swaps" value={swapSuccessData?.totalSwaps || 0} />
-                        <Statistic title="Approved" value={swapSuccessData?.approvedSwaps || 0} valueStyle={{ color: '#10B981' }} />
-                        <Statistic title="Rejected" value={swapSuccessData?.rejectedSwaps || 0} valueStyle={{ color: '#EF4444' }} />
-                        <Statistic title="Pending" value={swapSuccessData?.pendingSwaps || 0} valueStyle={{ color: '#F59E0B' }} />
-                      </Space>
+                </div>
+
+                {/* Phần số liệu nằm dưới */}
+                <div style={{ width: '100%', marginTop: 24, padding: '0 16px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                        <Statistic 
+                          title="Success Rate" 
+                          value={swapSuccessData?.successRate || 0} 
+                          precision={2} 
+                          suffix="%" 
+                          valueStyle={{ fontSize: 42, color: '#52c41a' }} 
+                        />
                     </div>
-                  </div>
-                </Col>
-              </Row>
+                    
+                    <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Total Swaps:</span>
+                            <strong>{swapSuccessData?.totalSwaps || 0}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span><span style={{color: '#10B981'}}>●</span> Approved:</span>
+                            <strong>{swapSuccessData?.approvedSwaps || 0}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span><span style={{color: '#EF4444'}}>●</span> Rejected:</span>
+                            <strong>{swapSuccessData?.rejectedSwaps || 0}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span><span style={{color: '#F59E0B'}}>●</span> Pending:</span>
+                            <strong>{swapSuccessData?.pendingSwaps || 0}</strong>
+                        </div>
+                    </Space>
+                </div>
+              </div>
             </Card>
           </Col>
         </Row>
