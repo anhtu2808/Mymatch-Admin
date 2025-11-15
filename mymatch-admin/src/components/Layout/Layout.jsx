@@ -22,23 +22,22 @@ const Layout = ({ children, headerContent }) => {
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
       {!isMobile && (
-        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} breakpoint="lg" theme="light" style={{ background: '#fff' }}>
-          <div />
+        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} breakpoint="lg" theme="light" style={{ background: '#fcfcfc'}}>
             <div className="logoSection" onClick={() => navigation("/")}>
-          <div className="logo-video-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}> 
+          <div className="logo-video-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: "20px"}}> 
             <img 
               src={logo} 
               alt="MyMatch Logo Animation" 
-              style={{ height: "100px", width: "100px" }}
+              style={{ height: "75px", width: "75px" }}
             />
           </div>
         </div>
-          <SideBar onNavigate={handleNavigate} />
+          <SideBar onNavigate={handleNavigate} collapsed={collapsed}/>
         </Sider>
       )}
 
       <AntLayout>
-        <Header style={{ background: '#fff', padding: '0 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <Header style={{ background: '#fcfcfc', padding: '0 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
           {isMobile && (
             <Button type="text" icon={<MenuOutlined />} onClick={() => setDrawerOpen(true)} />
           )}
